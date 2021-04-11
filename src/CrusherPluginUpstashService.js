@@ -34,7 +34,7 @@ function CrusherPluginUpstashService() {
     // the settings are the same as the crusher settings
     _settings.store = {
       ug: gqlRedis({
-        fetcher: _settings.fetcher,
+        fetcher: _settings.fetcher ||  require("got"),
         tokenService: _settings.tokenService,
       }),
     };
@@ -63,7 +63,7 @@ function CrusherPluginUpstashService() {
       .funcRemoveObject(remove)
       .setRespectDigest(_settings.respectDigest)
       .setCompressMin(_settings.compressMin)
-      .setUselz(_settings.uselz || false)
+      .setUselz(true)
       .setPrefix(_settings.prefix);
 
     // export the verbs
