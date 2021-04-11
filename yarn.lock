@@ -49,10 +49,11 @@
     "@types/node" "*"
 
 bmcrusher-node@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/bmcrusher-node/-/bmcrusher-node-1.0.0.tgz#a16678c2eaad597e5ec8ba0016aafcd7a7d7e3cb"
-  integrity sha512-Bpl2FynUa/WzcUeboBMCk8qaI9as4ybNHYqpXSErJByK5sMJCPrXZSZ+pTDDiqJWwm2GvH6GRwcWVVGh8Zotlw==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/bmcrusher-node/-/bmcrusher-node-1.0.1.tgz#443e1e123fa2fd453589d9b05b0239dd282f72d9"
+  integrity sha512-mxtZ9I8T/HFWacH+8B+/MIQIk4GRLtEHgLsImYZ2yTRr+zBvd4LB74DvlZLMK2mtQrjUVuYrU7xNyNhZz4QDdw==
   dependencies:
+    bmcrusher-node "^1.0.0"
     delay "^5.0.0"
     got "^11.8.2"
     lz-string "^1.4.4"

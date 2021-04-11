@@ -6,7 +6,8 @@ function CrusherPluginUpstashService() {
 
   // these will be specific to your plugin
   let _settings = null;
-
+ 
+  
   // prefixs on redis can be any string but
   // make sure we start and end with a single slash for consistency
   const fixPrefix = (prefix) =>
@@ -14,6 +15,7 @@ function CrusherPluginUpstashService() {
 
   // standard function to check store is present and of the correct type
   const checkStore = () => {
+
     if (!_settings.chunkSize)
       throw "You must provide the maximum chunksize supported";
     if (!_settings.prefix)
@@ -30,11 +32,11 @@ function CrusherPluginUpstashService() {
    */
   self.init = function (settings) {
     _settings = settings || {};
-
+    _settings.fetcher = _settings.fetcher || require("got");
     // the settings are the same as the crusher settings
     _settings.store = {
       ug: gqlRedis({
-        fetcher: _settings.fetcher ||  require("got"),
+        fetcher: _settings.fetcher,
         tokenService: _settings.tokenService,
       }),
     };
