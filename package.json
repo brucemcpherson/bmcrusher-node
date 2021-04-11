@@ -2,6 +2,10 @@
   "name": "bmcrusher-node",
   "version": "1.0.0",
   "description": "crusher to share files with apps script bmcrusher",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brucemcpherson/bmcrusher-node.git"
+  },
   "main": "index.js",
   "author": "bruce mcpherson",
   "license": "MIT",
