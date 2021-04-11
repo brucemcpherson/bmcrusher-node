@@ -1,6 +1,6 @@
 {
   "name": "bmcrusher-node",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "crusher to share files with apps script bmcrusher",
   "repository": {
     "type": "git",
@@ -10,7 +10,6 @@
   "author": "bruce mcpherson",
   "license": "MIT",
   "dependencies": {
-    "bmcrusher-node": "^1.0.0",
     "delay": "^5.0.0",
     "got": "^11.8.2",
     "lz-string": "^1.4.4"

@@ -48,16 +48,6 @@
   dependencies:
     "@types/node" "*"
 
-bmcrusher-node@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/bmcrusher-node/-/bmcrusher-node-1.0.1.tgz#443e1e123fa2fd453589d9b05b0239dd282f72d9"
-  integrity sha512-mxtZ9I8T/HFWacH+8B+/MIQIk4GRLtEHgLsImYZ2yTRr+zBvd4LB74DvlZLMK2mtQrjUVuYrU7xNyNhZz4QDdw==
-  dependencies:
-    bmcrusher-node "^1.0.0"
-    delay "^5.0.0"
-    got "^11.8.2"
-    lz-string "^1.4.4"
-
 cacheable-lookup@^5.0.3:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/cacheable-lookup/-/cacheable-lookup-5.0.4.tgz#5a6b865b2c44357be3d5ebc2a467b032719a7005"
