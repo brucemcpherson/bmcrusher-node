@@ -2,7 +2,7 @@
 
 # bmcrusher-node
 
-For transferring crushed data between app script node using various plugins. 
+For transferring crushed data between app script and node using various plugins. 
 
 ## Installation
 
@@ -10,51 +10,27 @@ For transferring crushed data between app script node using various plugins.
 yarn add bmcrusher-node
 ````
 
+## the crusher
+This is a key value store client, with various back ends as plugins. Values are compressed, and if necessary spread over multiple physical records in the backend store depending on its capabilities. Different backends are supported by plugins.
 
-## CrusherPluginUpstashService
+This is the Node client. Alternative clients allow you to share data across multiple platforms. In addition to the Node client, there is also an Apps Script client which has a set of plugins for multilple backends. So sharing data between Apps Script and Node is just a matter of using the appropriate plugin.
 
-
-Uses Upstash as a redis backend.
-
-For setting up Upstash and Apps script see https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/upstash/
-
-You'll need an Upstash account and credentials.
-
-### Node usage
-
-First get your upstash credentials. Mine are in a file like this. Choose the appropriate credential depending on whether you are reading or read/writing.
-````
-const upstashrw = "xxx";
-const upstashr = "xxx";
-````
-
-#### Initialize the crusher
-
-This is a similar pattern and options as described in the Apps Script writeup in https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/upstash/. At a minumum you should provide a token service function that areturns your upstash key. I also recommend a prefix to be applied to cache keys in case you want to use the same Upstash store for something else at some point.
-
-````
-const { CrusherPluginUpstashService } = require("bmcrusher-node");
-const { upstashrw } = require("./private/secrets");
-
-const crusher = new CrusherPluginUpstashService().init({
-  tokenService: () => upstashrw,
-  prefix: "/crusher/store"
-});
-
-````
-Now you can use the store as a regular key/value store which will be shared with other Node apps or Apps Script.
+There are only 3 methods in a client once intialized to a back end plugin. 
 
 ### put
 
-Put a value. If it's too big it'll compress it and then split it into pieces.
+Put a value. If it's too big it'll compress it and then split it into pieces. An optional expiry time is available to limit the lifetime of a kv pair. If the back end supports automatic lifecycle housekeeping (for example redis, Apps Script cache service and google cloud storage) expired items will be automatically removed sometime after expiry. Irrespective of the back end capabilities, items are never returned if they have expired.
+
+The key should be a string, and the value can be either a string or a stringifiable object. 
+
 
 ````
-crusher.put(key, someValue [,expiryTimeInSeconds])
+crusher.put(key, someValue  [,expiryTimeInSeconds])
 ````
 
 ### get
 
-Get a value. If it's in pieces it will reconstitute it to the original. If it's expired or doesnt exist, it'll return null
+Get a value. If it's in pieces it will reconstitute it to the original. If it's expired or doesn't exist, it'll return null. If the original input was an object, the object will be recreated.
 
 ````
 crusher.get(key)
@@ -66,3 +42,66 @@ Remove a value
 ````
 crusher.remove(key)
 ````
+
+## Coming soon
+
+Other values such as blobs etc will be supported shortly too. That will allow entire files such as images to be cached and reconstitued between platforms, as will various file conversions (for example between Google Sheets and Excel, or Google Docs and PDF). Watch this space for additional plugins to support these capabilities.
+
+## Plugins
+
+Google Apps Script has a selection of supported plugins
+
+some of which are specific to Apps Script platform
+- CacheService
+- PropertyService
+
+and others which are generic and are/will be implemented for Node as well
+- Upstash (redis/graphql)
+- Github
+- Drive
+- Google cloud storage
+- One Drive
+
+
+For details on Apps Script implementations, see https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/
+
+Some of the Node plugins will be implemented and built in to this module, but you can easily build your own for alternative backends. 
+
+## CrusherPluginUpstashService
+
+Uses Upstash as a redis backend.
+
+For setting up Upstash and Apps script see https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/upstash/
+
+You'll need an Upstash account and credentials.
+
+### Node usage
+
+
+First get your upstash credentials. Choose the appropriate credential depending on whether you are reading or read/writing. 
+
+````
+const upstashrw = "xxx";
+const upstashr = "xxx";
+````
+
+#### Initialize the crusher
+
+
+This is a similar pattern and options as described in the Apps Script writeup in https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/upstash/. 
+
+At a minumum you should provide a token service function that areturns your upstash key. I also recommend a prefix to be applied to cache keys in case you want to use the same Upstash store for something else at some point.
+
+````
+const { CrusherPluginUpstashService } = require("bmcrusher-node");
+const { upstashrw } = require("./private/secrets");
+
+const crusher = new CrusherPluginUpstashService().init({
+  tokenService: () => upstashrw,
+  prefix: "/crusher/store"
+});
+
+````
+
+Now you can use the the standard crusher.get, crusher.put and crusher.remove methods.
+
