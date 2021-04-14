@@ -367,6 +367,7 @@ const Squeeze = (function (ns) {
 
       // now get the master if there is one
       return _getObject(self.getStore(), _prefix + propKey).then((master) => {
+
         if (
           master &&
           master.digest &&

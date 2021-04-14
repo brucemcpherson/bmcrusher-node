@@ -1,6 +1,6 @@
 {
   "name": "bmcrusher-node",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "crusher to share files with apps script bmcrusher",
   "repository": {
     "type": "git",
@@ -12,6 +12,7 @@
   "dependencies": {
     "delay": "^5.0.0",
     "got": "^11.8.2",
-    "lz-string": "^1.4.4"
+    "lz-string": "^1.4.4",
+    "qottle": "^1.0.5"
   }
 }

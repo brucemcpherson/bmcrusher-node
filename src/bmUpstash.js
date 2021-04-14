@@ -154,7 +154,7 @@ const gqlRedis = ({
 } = {}) => {
   if (!fetcher)
     throw new Error(
-      `Must specify a fetcher - for apps script it should probably be ${"U"}rlfetch.fetch`
+      `Must specify a fetcher - for apps script it should probably be Urlfetch.fetch`
     );
   if (!tokenService)
     throw new Error(

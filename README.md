@@ -90,7 +90,7 @@ const upstashr = "xxx";
 
 This is a similar pattern and options as described in the Apps Script writeup in https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/upstash/. 
 
-At a minumum you should provide a token service function that areturns your upstash key. I also recommend a prefix to be applied to cache keys in case you want to use the same Upstash store for something else at some point.
+At a minumum you should provide a token service function that returns your upstash key. I also recommend a prefix to be applied to cache keys in case you want to use the same Upstash store for something else at some point.
 
 ````
 const { CrusherPluginUpstashService } = require("bmcrusher-node");
@@ -99,6 +99,46 @@ const { upstashrw } = require("./private/secrets");
 const crusher = new CrusherPluginUpstashService().init({
   tokenService: () => upstashrw,
   prefix: "/crusher/store"
+});
+
+````
+
+Now you can use the the standard crusher.get, crusher.put and crusher.remove methods.
+
+
+
+## CrusherPluginGitService
+
+Uses Github as a backend.
+
+For setting up Github and Apps script see https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/github/
+
+You'll need a github token. The simplest is to create a personal token, since this is to be server based. For a client version, you'd want to create an oauth flow. Here's the docs for how to create a personal access token https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
+
+### Node usage
+
+First get your token, created with repo scope.
+
+````
+const crusherGit = "gxxxxxxxx";
+````
+
+#### Initialize the crusher
+
+
+This is a similar pattern and options as described in the Apps Script writeup in https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/github/
+
+At a minumum you should provide a token service function that returns your github token. I also recommend a prefix to be applied to cache keys in case you want to use the same repo for something else at some point.
+
+````
+const { CrusherPluginGitService } = require("bmcrusher-node");
+const { crusherGit } = require("./private/secrets");
+
+const crusher = new CrusherPluginGitService().init({
+  tokenService: () => crusherGit,
+  prefix: "store",
+  repo: "-crusher-store",
+  owner: "brucemcpherson"
 });
 
 ````

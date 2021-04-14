@@ -43,17 +43,20 @@ function Fetcher({ fetcher, tokenService }) {
    * @param {object} options any additional options
    * @return {object} a standard response
    */
-  this.got = (url, options) => {
-    options = options || {};
+  this.got = (url, options = {}) => {
     options = { method: "GET", ...options };
     options.headers = options.headers || {};
     if (tokenService) {
       options.headers.authorization = "Bearer " + tokenService();
     }
-   
+    
     return fetcher(url, options).then((response) => {
       return makeResults(response);
-    });
+    }).catch(err => {
+      // simulate an error
+      console.log('sim fetcher err', err)
+      return makeResults(err.response)
+    })
   };
 }
 module.exports = {
