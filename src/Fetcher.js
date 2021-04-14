@@ -54,7 +54,6 @@ function Fetcher({ fetcher, tokenService }) {
       return makeResults(response);
     }).catch(err => {
       // simulate an error
-      console.log('sim fetcher err', err)
       return makeResults(err.response)
     })
   };
