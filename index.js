@@ -3,7 +3,7 @@ const {
 } = require("./src/CrusherPluginUpstashService");
 const {
   CrusherPluginGitService
-}= require("./src/CrusherPluginGitService");
+} = require("./src/CrusherPluginGitService");
 module.exports = {
   CrusherPluginUpstashService,
   CrusherPluginGitService,

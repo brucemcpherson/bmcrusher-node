@@ -1,4 +1,4 @@
-const { Squeeze } = require("./Squeeze");
+const { Chunker } = require("./Chunker");
 const { gqlRedis } = require("./bmUpstash");
 const { Utils } = require("./Utils");
 function CrusherPluginUpstashService() {
@@ -6,8 +6,7 @@ function CrusherPluginUpstashService() {
 
   // these will be specific to your plugin
   let _settings = null;
- 
-  
+
   // prefixs on redis can be any string but
   // make sure we start and end with a single slash for consistency
   const fixPrefix = (prefix) =>
@@ -15,7 +14,6 @@ function CrusherPluginUpstashService() {
 
   // standard function to check store is present and of the correct type
   const checkStore = () => {
-
     if (!_settings.chunkSize)
       throw "You must provide the maximum chunksize supported";
     if (!_settings.prefix)
@@ -57,7 +55,9 @@ function CrusherPluginUpstashService() {
     checkStore();
 
     // now initialize the squeezer
-    self.squeezer = new Squeeze.Chunking()
+    self.squeezer = new Chunker();
+
+    self.squeezer
       .setStore(_settings.store)
       .setChunkSize(_settings.chunkSize)
       .funcWriteToStore(write)
@@ -69,9 +69,9 @@ function CrusherPluginUpstashService() {
       .setPrefix(_settings.prefix);
 
     // export the verbs
-    self.put = self.squeezer.setBigProperty;
-    self.get = self.squeezer.getBigProperty;
-    self.remove = self.squeezer.removeBigProperty;
+    self.put = (...vargs) => self.squeezer.setBigProperty(...vargs);
+    self.get = (...vargs) => self.squeezer.getBigProperty(...vargs);
+    self.remove = (...vargs) => self.squeezer.removeBigProperty(...vargs);
     return self;
   };
 

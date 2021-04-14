@@ -1,4 +1,4 @@
-const { Squeeze } = require("./Squeeze");
+const { Chunker } = require("./Chunker");
 const { Utils } = require("./Utils");
 const { Fetcher } = require("./Fetcher");
 const Qottle = require("qottle");
@@ -62,7 +62,7 @@ function CrusherPluginGitService() {
     }).got;
 
     // the github api doesnt like parallel requests from the same token, so we'll use this fetcher to queue them up
-    const queue = new Qottle({ concurrent: 1});
+    const queue = new Qottle({ concurrent: 1 });
     const headers = {
       headers: {
         accept: "application/vnd.github.v3+json",
@@ -81,7 +81,7 @@ function CrusherPluginGitService() {
           })
           .then(({ result }) => result)
           .catch((err) => {
-            console.log('console log- caught fetcher error', err);
+            console.log("console log- caught fetcher error", err);
             return Promise.reject(err);
           }),
     };
@@ -98,8 +98,8 @@ function CrusherPluginGitService() {
     checkStore();
 
     // now initialize the squeezer
-    self.squeezer = new Squeeze.Chunking()
-      .setStore(store)
+    self.squeezer = new Chunker()
+    self.squeezer.setStore(store)
       .setChunkSize(_settings.chunkSize)
       .funcWriteToStore(write)
       .funcReadFromStore(read)
@@ -111,9 +111,9 @@ function CrusherPluginGitService() {
       .setPrefix("");
 
     // export the verbs
-    self.put = self.squeezer.setBigProperty;
-    self.get = self.squeezer.getBigProperty;
-    self.remove = self.squeezer.removeBigProperty;
+    self.put = (...vargs) => self.squeezer.setBigProperty(...vargs);
+    self.get = (...vargs) => self.squeezer.getBigProperty(...vargs);
+    self.remove = (...vargs) => self.squeezer.removeBigProperty(...vargs);
     return self;
   };
   const getUrl = (store, key) => {
@@ -190,13 +190,14 @@ function CrusherPluginGitService() {
       content: Buffer.from(str).toString("base64"),
       message: `bmcrusher:${key}`,
     };
-    return store.fetcher(url, {
+    return store
+      .fetcher(url, {
         json: body,
         method: "PUT",
       })
       .then((result) => {
         if (!result.success) {
-          console.log('failed writing', result)
+          console.log("failed writing", result);
           return Promise.reject(result.content);
         } else {
           return result.data;
