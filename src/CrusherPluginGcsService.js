@@ -78,7 +78,6 @@ function CrusherPluginGcsService() {
   // return your own settings
   self.getSettings = () => _settings;
 
-  const makeKey = (store, key) => key;
   /**
    * remove an item
    * @param {string} key the key to remove
@@ -88,21 +87,24 @@ function CrusherPluginGcsService() {
     checkStore();
     console.log("removing...", key);
     return removeFile({
-      bucket: store.bucket,
-      key: makeKey(store, key),
+      ...store,
+      key,
     })
-      .then(({ statusCode, statusMessage }) => {
-        if (!Math.floor(statusCode / 100) === 2) {
-          console.log("failed to delete", statusCode, statusMessage);
-          return Promise.reject(statusMessage);
+      .then((r) => {
+        let { code, statusCode, message, statusMessage } = r;
+        code = code || statusCode;
+        message = message || statusMessage;
+        if (!Math.floor(code / 100) === 2) {
+          console.log("failed to delete", code, message);
+          return Promise.reject(r);
         } else {
-          return statusCode;
+          return r;
         }
       })
       .catch((err) => {
         if (err.code === 404) {
           // just didnt exit so thats ok
-          console.log('...didnt exist', key)
+          console.log("...didnt exist", key);
           return Promise.resolve(null);
         }
         console.log("error removing", err);
@@ -120,11 +122,10 @@ function CrusherPluginGcsService() {
    */
   const write = async (store, key, str = "", expiry) => {
     checkStore();
-    const mk = makeKey(store, key);
-    console.log("...writing", mk);
+    console.log("...writing", key);
     const writeStream = createWriteStream({
       ...store,
-      key:mk,
+      key,
     });
     return stringToStream({ writeStream, content: str }).catch((err) => {
       console.log("failed to write", key, err);
@@ -140,19 +141,18 @@ function CrusherPluginGcsService() {
    */
   const read = async (store, key) => {
     checkStore();
-    const mk = makeKey(store, key)
     const readStream = createReadStream({
       ...store,
-      key: mk,
+      key,
     });
-    console.log("...reading", mk);
+    console.log("...reading", key);
     return streamToString({ readStream }).catch((err) => {
       // it's ok for it not to exist
-      if (err.code = 404) {
-        console.log("...didnt exist", mk);
-        return Promise.resolve(null)
+      if (err.code === 404) {
+        console.log("...didnt exist", key);
+        return Promise.resolve(null);
       }
-      console.log('read failure', mk)
+      console.log("read failure", key);
       return Promise.reject(err);
     });
   };
