@@ -145,3 +145,41 @@ const crusher = new CrusherPluginGitService().init({
 
 Now you can use the the standard crusher.get, crusher.put and crusher.remove methods.
 
+## CrusherPluginGcsService
+
+Uses Google Cloud Storage as a backend.
+
+For setting up Github and Apps script see https://ramblings.mcpher.com/cacheplugins/apps-script-and-node-gcs/
+
+You'll need a service account .json file with enough scope to write to the cloud storage bucket you're using for this. See https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/gcs/
+
+### Node usage
+
+First get your service account credentials using whichevery method you prefer. I usually do something like this
+
+````
+const _credentials = require("./bmcrusher-test-xxxxxxx.json");
+const getGcpCreds = () => _credentials;
+````
+
+#### Initialize the crusher
+
+
+This is a similar pattern and options as described in the Apps Script writeup in https://ramblings.mcpher.com/apps-script/apps-script-cache-crusher/gcs/
+
+At a minumum you should provide a token service function that returns your service account credentials. I also recommend a prefix to be applied to cache keys in case you want to use the same bucket for something else at some point.
+
+````
+const { CrusherPluginGcsService } = require("bmcrusher-node");
+const { getGcpCreds } = require("./private/secrets");
+
+const gcsCrusher = new CrusherPluginGcsService().init({
+  tokenService: () => getGcpCreds(),
+  prefix: "/crusher/store",
+  bucketName: "bmcrusher-test-bucket-store",
+});
+
+````
+
+Now you can use the the standard crusher.get, crusher.put and crusher.remove methods.
+
