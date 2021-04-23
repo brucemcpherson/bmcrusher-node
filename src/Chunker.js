@@ -163,6 +163,18 @@ class Chunker {
     return this;
   }
 
+    /**
+   * set how to read from store
+   * @param {function} func how to read from store
+   * @return {Chunker} this
+   */
+  funcExistFromStore(func) {
+    // func should take a store key, and return a string
+    this._existFromStore = this._checkaFunc(func);
+    return this;
+  }
+
+
   /**
    * set how to write to store
    * @param {function} func how to set an object
@@ -459,8 +471,7 @@ class Chunker {
   _setBigProperty = async (propKey, sob, expire) => {
     // crush the object
     var skipZip = sob.length < this._compressMin;
-    var chunks,
-      crushed = skipZip ? sob : this.zip(sob, this._uselz);
+    var crushed = skipZip ? sob : this.zip(sob, this._uselz);
 
     // get the digest
     // the digest is used to avoid updates when theres no change
